@@ -1,6 +1,7 @@
-
+import { useNavigate } from "react-router-dom";
 
 const Sidebar = ({ lists = [], tags = [], tasksCount }) => {
+    const navigate = useNavigate();
     return (
         <aside className="fixed left-0 top-0 h-screen w-64 bg-white p-6 shadow-lg rounded-r-lg flex flex-col justify-between z-50">
             <div>
@@ -34,14 +35,14 @@ const Sidebar = ({ lists = [], tags = [], tasksCount }) => {
                 <div className="mb-8">
                     <h3 className="text-xs uppercase tracking-wider text-gray-500 mb-4">TASKS</h3>
                     <ul>
-                        <li className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-gray-50 cursor-pointer">
+                        <li onClick={() => navigate('/upcoming')} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-gray-50 cursor-pointer">
                             <div className="flex items-center">
                                 <span className="mr-3 text-gray-600">≫</span> {/* Custom arrow for "Upcoming" */}
                                 <span className="text-gray-800">Upcoming</span>
                             </div>
                             <span className="text-sm text-gray-500">12</span>
                         </li>
-                        <li className="flex items-center justify-between py-2 px-3 rounded-lg bg-gray-100 text-blue-600 font-medium cursor-pointer">
+                        <li onClick={() => navigate('/today')} className="flex items-center justify-between py-2 px-3 rounded-lg bg-gray-100 text-blue-600 font-medium cursor-pointer">
                             <div className="flex items-center">
                                 {/* Calendar icon for "Today" */}
                                 <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -51,7 +52,7 @@ const Sidebar = ({ lists = [], tags = [], tasksCount }) => {
                             </div>
                             <span className="text-sm text-blue-600">{tasksCount}</span>
                         </li>
-                        <li className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-gray-50 cursor-pointer">
+                        <li onClick={() => navigate('/calendar')} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-gray-50 cursor-pointer">
                             <div className="flex items-center">
                                 {/* Calendar icon for "Calendar" */}
                                 <svg className="w-5 h-5 mr-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -60,7 +61,7 @@ const Sidebar = ({ lists = [], tags = [], tasksCount }) => {
                                 <span className="text-gray-800">Calendar</span>
                             </div>
                         </li>
-                        <li className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-gray-50 cursor-pointer">
+                        <li onClick={() => navigate('/sticky-wall')} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-gray-50 cursor-pointer">
                             <div className="flex items-center">
                                 {/* Sticky note icon for "Sticky Wall" */}
                                 <svg className="w-5 h-5 mr-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
