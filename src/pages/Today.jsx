@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 // Main App Component
-const App = () => {
+const Home = () => {
     // Initialize tasks with some dummy data or an empty array
     // Tasks will now persist using localStorage for a "soft" persistence (client-side only)
     const [tasks, setTasks] = useState(() => {
@@ -19,16 +19,17 @@ const App = () => {
 
 
     // Handlers for task operations - now directly modifying local state
-    const handleAddTask = (title, dueDate = '', list = '', tags = []) => {
+    const handleAddTask = (title, dueDate = '', dueTime = '', list = '', tags = []) => {
         if (!title.trim()) return null;
 
         const newId = Date.now().toString(); // Simple unique ID for static app
         const newTask = {
             id: newId,
             title: title.trim(),
-            completed: false,
+            completed: false, // Default to not completed
             createdAt: new Date(), // Use local Date object for sorting
             dueDate: dueDate,
+            dueTime: dueTime, // Added dueTime
             list: list,
             tags: tags,
             description: '',
@@ -88,8 +89,8 @@ const App = () => {
 
     return (
         <div className="flex min-h-screen bg-gray-100 font-inter">
-            {/* Main Task List View - no longer needs mr-96 as panel is a modal */}
-            <div className={`flex-1 p-8 transition-all duration-300`}>
+            {/* Main Task List View */}
+            <div className={`flex-1 transition-all duration-300`}> {/* Removed p-8 */}
                 <TaskListView
                     tasks={tasks}
                     todayTasksCount={todayTasks.length}
@@ -141,40 +142,23 @@ const TaskListView = ({ tasks, todayTasksCount, onAddTask, onToggleComplete, onS
 
 
     return (
-        <div className="w-full min-h-screen bg-white px-6 pt-6">
-            <h1 className="text-4xl font-bold text-gray-900 mb-6 flex items-center">
-                Today
-                <span className="ml-2 px-3 py-0.5 bg-blue-100 text-blue-700 rounded-full text-lg font-semibold">
-                    {todayTasksCount}
-                </span>
+        <div className="w-full h-full bg-white rounded-none"> {/* Changed max-w-2xl mx-auto p-8 rounded-lg to w-full h-full rounded-none */}
+            <h1 className="text-4xl font-bold text-gray-800 mb-6 flex items-center p-8"> {/* Added p-8 for internal spacing */}
+                Today <span className="ml-4 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-lg font-semibold">{todayTasksCount}</span>
             </h1>
 
             {/* Add New Task Form */}
-            <form onSubmit={handleNewTaskSubmit} className="mb-6 border-b border-gray-200 pb-4">
-                <div className="flex items-center w-full">
-                    <button
-                        type="submit"
-                        className="text-gray-500 hover:text-blue-600 mr-3 focus:outline-none"
-                    >
-                        <svg
-                            className="w-6 h-6"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                            />
+            <form onSubmit={handleNewTaskSubmit} className="mb-8 border-b border-gray-200 pb-6 px-8"> {/* Added px-8 */}
+                <div className="flex items-center bg-gray-50 rounded-lg p-3">
+                    <button type="submit" className="text-gray-500 hover:text-blue-600 mr-3 focus:outline-none">
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                         </svg>
                     </button>
                     <input
                         type="text"
                         placeholder="Add New Task"
-                        className="flex-1 text-base text-gray-800 placeholder-gray-400 bg-transparent focus:outline-none"
+                        className="flex-1 bg-transparent text-gray-800 placeholder-gray-400 focus:outline-none"
                         value={newTaskTitle}
                         onChange={(e) => setNewTaskTitle(e.target.value)}
                     />
@@ -182,13 +166,11 @@ const TaskListView = ({ tasks, todayTasksCount, onAddTask, onToggleComplete, onS
             </form>
 
             {/* Task List */}
-            <ul className="space-y-2">
+            <ul className="space-y-4 px-8"> {/* Added px-8 */}
                 {displayTasks.length === 0 && completedTasks.length === 0 && (
-                    <p className="text-gray-500 text-center py-4">
-                        No tasks for today! Time to relax or add some new ones.
-                    </p>
+                    <p className="text-gray-500 text-center py-4">No tasks for today! Time to relax or add some new ones.</p>
                 )}
-                {displayTasks.map((task) => (
+                {displayTasks.map(task => (
                     <TaskItem
                         key={task.id}
                         task={task}
@@ -198,10 +180,10 @@ const TaskListView = ({ tasks, todayTasksCount, onAddTask, onToggleComplete, onS
                 ))}
                 {completedTasks.length > 0 && (
                     <>
-                        <div className="text-gray-500 text-sm uppercase tracking-wider mt-6 pt-4 border-t border-gray-200">
+                        <div className="text-gray-500 text-sm uppercase tracking-wider mt-8 pt-4 border-t border-gray-200">
                             Completed Tasks
                         </div>
-                        {completedTasks.map((task) => (
+                        {completedTasks.map(task => (
                             <TaskItem
                                 key={task.id}
                                 task={task}
@@ -213,7 +195,6 @@ const TaskListView = ({ tasks, todayTasksCount, onAddTask, onToggleComplete, onS
                 )}
             </ul>
         </div>
-
     );
 };
 
@@ -277,6 +258,15 @@ const TaskItem = ({ task, onToggleComplete, onSelectTask }) => {
                         </svg>
                         {task.dueDate || 'No Due Date'}
                     </span>
+                    {/* Display Due Time */}
+                    {task.dueTime && (
+                        <span className="flex items-center bg-gray-100 px-2 py-1 rounded-full">
+                            <svg className="w-4 h-4 mr-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            {task.dueTime}
+                        </span>
+                    )}
                     {/* Display List/Category */}
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${getListColorClass(task.list)}`}>
                         {task.list || 'No List'}
@@ -333,10 +323,10 @@ const TaskDetailPanel = ({ task, isOpen, onClose, onSave, onDelete }) => {
     }
 
     const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
+        const { name, value } = e.target;
         // Handle radio button for 'completed' status
         if (name === 'completed') {
-            setEditedTask(prev => ({ ...prev, completed: value === 'true' }));
+            setEditedTask(prev => ({ ...prev, completed: value === 'completed' }));
         } else {
             setEditedTask(prev => ({ ...prev, [name]: value }));
         }
@@ -410,12 +400,12 @@ const TaskDetailPanel = ({ task, isOpen, onClose, onSave, onDelete }) => {
     const listOptions = ['Personal', 'Work', 'Groceries', 'Other']; // Example lists
 
     return (
-        // Overlay and centering container for the modal
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 p-4">
-            {/* Actual panel content, now centered and with defined width/height */}
-            <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md relative flex flex-col max-h-[90vh]">
+        // Overlay container for the centered modal, with padding around it
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 p-4"> {/* Re-added p-4 */}
+            {/* Actual panel content, now centered and with defined width/height, rounded corners and shadow */}
+            <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md relative flex flex-col max-h-[90vh]"> {/* Reverted to original styling */}
                 {/* Header */}
-                <div className="flex items-center justify-between mb-6 border-b pb-4">
+                <div className="flex items-center justify-between mb-6 border-b pb-4"> {/* Reverted internal padding */}
                     <h2 className="text-2xl font-bold text-gray-800">Task:</h2>
                     <button onClick={onClose} className="text-gray-500 hover:text-gray-800 focus:outline-none">
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -425,7 +415,7 @@ const TaskDetailPanel = ({ task, isOpen, onClose, onSave, onDelete }) => {
                 </div>
 
                 {/* Task Details Form - now scrollable if content overflows */}
-                <div className="flex-1 overflow-y-auto pr-2">
+                <div className="flex-1 overflow-y-auto pr-2"> {/* Reverted internal padding */}
                     {/* Radio buttons for completed status */}
                     <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
@@ -435,22 +425,22 @@ const TaskDetailPanel = ({ task, isOpen, onClose, onSave, onDelete }) => {
                                     type="radio"
                                     className="form-radio h-4 w-4 text-green-600"
                                     name="completed"
-                                    value="true"
+                                    value="completed"
                                     checked={editedTask.completed === true}
                                     onChange={handleChange}
                                 />
-                                <span className="ml-2 text-gray-800">Done</span>
+                                <span className="ml-2 text-gray-800">Completed</span>
                             </label>
                             <label className="inline-flex items-center">
                                 <input
                                     type="radio"
                                     className="form-radio h-4 w-4 text-red-600"
                                     name="completed"
-                                    value="false"
+                                    value="not completed"
                                     checked={editedTask.completed === false}
                                     onChange={handleChange}
                                 />
-                                <span className="ml-2 text-gray-800">Undone</span>
+                                <span className="ml-2 text-gray-800">Not Completed</span>
                             </label>
                         </div>
                     </div>
@@ -503,6 +493,19 @@ const TaskDetailPanel = ({ task, isOpen, onClose, onSave, onDelete }) => {
                             id="dueDate"
                             name="dueDate"
                             value={editedTask.dueDate}
+                            onChange={handleChange}
+                            className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        />
+                    </div>
+
+                    {/* New Due Time input */}
+                    <div className="mb-4">
+                        <label htmlFor="dueTime" className="block text-sm font-medium text-gray-700 mb-1">Due time</label>
+                        <input
+                            type="time"
+                            id="dueTime"
+                            name="dueTime"
+                            value={editedTask.dueTime}
                             onChange={handleChange}
                             className="w-full p-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500"
                         />
@@ -596,7 +599,7 @@ const TaskDetailPanel = ({ task, isOpen, onClose, onSave, onDelete }) => {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="mt-auto flex justify-between pt-4 border-t border-gray-200">
+                <div className="mt-auto flex justify-between pt-4 border-t border-gray-200"> {/* Reverted internal padding */}
                     <button
                         onClick={handleDeleteClick}
                         className="px-5 py-2 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 transition duration-200"
@@ -615,4 +618,4 @@ const TaskDetailPanel = ({ task, isOpen, onClose, onSave, onDelete }) => {
     );
 };
 
-export default App;
+export default Home;
