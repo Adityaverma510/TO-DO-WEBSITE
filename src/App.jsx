@@ -4,7 +4,7 @@ import { AppLayout } from './components/Layout/AppLayout';
 import Home from './pages/Today';
 import { Calendar } from './pages/Calendar';
 import { Upcoming } from './pages/Upcoming';
-import { StickyWall } from './pages/StickyWall';
+import StickyWall from './pages/StickyWall';
 
 
 const router = createBrowserRouter([
