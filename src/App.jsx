@@ -2,9 +2,9 @@ import {RouterProvider, createBrowserRouter} from 'react-router-dom';
 import { ErrorPage } from './pages/ErrorPage';
 import { AppLayout } from './components/Layout/AppLayout';
 import Home from './pages/Today';
-import { Calendar } from './pages/Calendar';
 import { Upcoming } from './pages/Upcoming';
 import StickyWall from './pages/StickyWall';
+import Calendar from './pages/Calendar';
 
 
 const router = createBrowserRouter([
