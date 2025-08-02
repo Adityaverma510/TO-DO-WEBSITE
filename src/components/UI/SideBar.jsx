@@ -1,7 +1,12 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
-const Sidebar = ({ lists = [], tags = [], tasksCount }) => {
+const Sidebar = ({ lists = [], tags = [], upcomingTasksCount = 12, todayTasksCount = 5, stickyWallCount = 8 }) => {
     const navigate = useNavigate();
+    const location = useLocation(); // Get the current URL location
+
+    // Helper function to determine if a link is active
+    const isActive = (path) => location.pathname === path;
+
     return (
         <aside className="fixed left-0 top-0 h-screen w-64 bg-white p-6 shadow-lg rounded-r-lg flex flex-col justify-between z-50">
             <div>
@@ -35,40 +40,76 @@ const Sidebar = ({ lists = [], tags = [], tasksCount }) => {
                 <div className="mb-8">
                     <h3 className="text-xs uppercase tracking-wider text-gray-500 mb-4">TASKS</h3>
                     <ul>
-                        <li onClick={() => navigate('/upcoming')} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-gray-50 cursor-pointer">
+                        <li
+                            onClick={() => navigate('/upcoming')}
+                            className={`flex items-center justify-between py-2 px-3 rounded-lg cursor-pointer transition-colors duration-150 ${
+                                isActive('/upcoming')
+                                    ? 'bg-gray-100 text-blue-600 font-medium'
+                                    : 'hover:bg-gray-50 text-gray-800'
+                            }`}
+                        >
                             <div className="flex items-center">
-                                <span className="mr-3 text-gray-600">≫</span> {/* Custom arrow for "Upcoming" */}
-                                <span className="text-gray-800">Upcoming</span>
+                                <span className="mr-3">≫</span> {/* Custom arrow for "Upcoming" */}
+                                <span>Upcoming</span>
                             </div>
-                            <span className="text-sm text-gray-500">12</span>
+                            <span className={`text-sm ${isActive('/upcoming') ? 'text-blue-600' : 'text-gray-500'}`}>
+                                {/* The upcomingTasksCount should be passed as a prop from a parent component that holds the real-time data */}
+                                {upcomingTasksCount}
+                            </span>
                         </li>
-                        <li onClick={() => navigate('/today')} className="flex items-center justify-between py-2 px-3 rounded-lg bg-gray-100 text-blue-600 font-medium cursor-pointer">
+                        <li
+                            onClick={() => navigate('/today')}
+                            className={`flex items-center justify-between py-2 px-3 rounded-lg cursor-pointer transition-colors duration-150 ${
+                                isActive('/today')
+                                    ? 'bg-gray-100 text-blue-600 font-medium'
+                                    : 'hover:bg-gray-50 text-gray-800'
+                            }`}
+                        >
                             <div className="flex items-center">
                                 {/* Calendar icon for "Today" */}
-                                <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <svg className={`w-5 h-5 mr-3 ${isActive('/today') ? 'text-blue-600' : 'text-gray-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                 </svg>
                                 <span>Today</span>
                             </div>
-                            <span className="text-sm text-blue-600">{tasksCount}</span>
+                            <span className={`text-sm ${isActive('/today') ? 'text-blue-600' : 'text-gray-500'}`}>
+                                {todayTasksCount}
+                            </span>
                         </li>
-                        <li onClick={() => navigate('/calendar')} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-gray-50 cursor-pointer">
+                        <li
+                            onClick={() => navigate('/calendar')}
+                            className={`flex items-center justify-between py-2 px-3 rounded-lg cursor-pointer transition-colors duration-150 ${
+                                isActive('/calendar')
+                                    ? 'bg-gray-100 text-blue-600 font-medium'
+                                    : 'hover:bg-gray-50 text-gray-800'
+                            }`}
+                        >
                             <div className="flex items-center">
                                 {/* Calendar icon for "Calendar" */}
-                                <svg className="w-5 h-5 mr-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <svg className={`w-5 h-5 mr-3 ${isActive('/calendar') ? 'text-blue-600' : 'text-gray-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                 </svg>
-                                <span className="text-gray-800">Calendar</span>
+                                <span>Calendar</span>
                             </div>
                         </li>
-                        <li onClick={() => navigate('/sticky-wall')} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-gray-50 cursor-pointer">
+                        <li
+                            onClick={() => navigate('/sticky-wall')}
+                            className={`flex items-center justify-between py-2 px-3 rounded-lg cursor-pointer transition-colors duration-150 ${
+                                isActive('/sticky-wall')
+                                    ? 'bg-gray-100 text-blue-600 font-medium'
+                                    : 'hover:bg-gray-50 text-gray-800'
+                            }`}
+                        >
                             <div className="flex items-center">
                                 {/* Sticky note icon for "Sticky Wall" */}
-                                <svg className="w-5 h-5 mr-3 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <svg className={`w-5 h-5 mr-3 ${isActive('/sticky-wall') ? 'text-blue-600' : 'text-gray-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
                                 </svg>
-                                <span className="text-gray-800">Sticky Wall</span>
+                                <span>Sticky Wall</span>
                             </div>
+                            <span className={`text-sm ${isActive('/sticky-wall') ? 'text-blue-600' : 'text-gray-500'}`}>
+                                {stickyWallCount}
+                            </span>
                         </li>
                     </ul>
                 </div>

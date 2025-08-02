@@ -820,6 +820,8 @@ const MonthView = ({ currentDate, tasks, onSelectTask, onDayClick }) => {
 const WeekView = ({ currentDate, tasks, onSelectTask, getTasksForDate, getStartOfWeek }) => {
     const startOfWeek = getStartOfWeek(currentDate);
     const daysOfWeek = [];
+    const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
     for (let i = 0; i < 7; i++) {
         const date = new Date(startOfWeek);
         date.setDate(startOfWeek.getDate() + i);
@@ -827,21 +829,22 @@ const WeekView = ({ currentDate, tasks, onSelectTask, getTasksForDate, getStartO
     }
 
     return (
-        <div className="grid grid-cols-7 gap-1 h-full">
-            {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                <div key={day} className="text-center font-semibold text-gray-600 py-2 border-b border-gray-200">
-                    {day}
-                </div>
-            ))}
-            {daysOfWeek.map(date => {
+        <div className="grid grid-cols-7 gap-1 h-full border border-gray-200">
+            {daysOfWeek.map((date, index) => {
                 const dateString = date.toISOString().split('T')[0];
-                const dayTasks = getTasksForDate(dateString); // getTasksForDate already filters pending and sorts by time
+                const dayTasks = getTasksForDate(dateString);
                 const isToday = dateString === new Date().toISOString().split('T')[0];
 
                 return (
-                    <div key={dateString} className={`border border-gray-200 p-2 text-sm relative h-full flex flex-col ${isToday ? 'bg-blue-50 border-blue-500 ring-2 ring-blue-300' : (dayTasks.length > 0 ? 'bg-blue-50' : 'bg-white')}`}> {/* Added bg-blue-50 for days with tasks */}
-                        <div className={`text-center font-semibold mb-2 ${isToday ? 'text-blue-700' : 'text-gray-800'}`}>
-                            {date.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric' })}
+                    <div
+                        key={dateString}
+                        className={`p-2 text-sm relative min-h-[150px] flex flex-col ${isToday ? 'bg-blue-50' : 'bg-white'} ${index > 0 ? 'border-l border-gray-200' : ''}`}
+                    >
+                        <div className={`text-center font-semibold mb-2 ${isToday ? 'text-blue-700' : 'text-gray-800'} pt-2 pb-1 border-b border-gray-200`}>
+                            {weekdays[date.getDay()]}
+                            <div className="font-normal text-xs text-gray-500">
+                                {date.toLocaleDateString('en-US', { day: 'numeric' })}
+                            </div>
                         </div>
                         <div className="flex-1 overflow-y-auto space-y-1">
                             {dayTasks.map(task => (
@@ -850,7 +853,7 @@ const WeekView = ({ currentDate, tasks, onSelectTask, getTasksForDate, getStartO
                                 </div>
                             ))}
                             {dayTasks.length === 0 && (
-                                <p className="text-xs text-gray-400 text-center">No tasks</p>
+                                <p className="text-xs text-gray-400 text-center py-2">No tasks</p>
                             )}
                         </div>
                     </div>
